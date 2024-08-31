@@ -21,6 +21,15 @@ function App() {
   const [time, setTime] = useState<number>(0);
 
   const addLearningRecord = () => {
+    if (title === "") {
+      alert("学習内容を入力してください");
+      return;
+    }
+    if (time === 0) {
+      alert("学習時間を入力してください");
+      return;
+    }
+
     const newRecord: Record = {
       id: records.length + 1,
       title: title,
