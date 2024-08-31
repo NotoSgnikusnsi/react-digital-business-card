@@ -1,13 +1,12 @@
 import {
   Box,
-  Center,
-  ChakraBaseProvider,
-  Container,
+  Button,
+  ChakraProvider,
   Flex,
+  Input,
   Text,
 } from "@chakra-ui/react";
 import "./App.css";
-import { px } from "framer-motion";
 
 function App() {
   const records = [
@@ -18,9 +17,16 @@ function App() {
 
   return (
     <>
-      <ChakraBaseProvider>
-        <Box>
-          <Text fontSize={"x-large"}>学習記録一覧</Text>
+      <ChakraProvider>
+        <div>
+          <Text fontSize={"x-large"} mb={"4px"}>
+            学習記録一覧
+          </Text>
+          <Box mb={"8px"}>
+            <Input placeholder="学習内容を入力" mb={"4px"} />
+            <Input placeholder="学習時間を入力" mb={"4px"} type="number" />
+            <Button colorScheme="teal">記録</Button>
+          </Box>
           <Box>
             {records.map((record) => {
               return (
@@ -33,8 +39,8 @@ function App() {
               );
             })}
           </Box>
-        </Box>
-      </ChakraBaseProvider>
+        </div>
+      </ChakraProvider>
     </>
   );
 }
