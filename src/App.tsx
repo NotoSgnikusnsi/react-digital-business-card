@@ -7,13 +7,29 @@ import {
   Text,
 } from "@chakra-ui/react";
 import "./App.css";
+import { useState } from "react";
+
+type Record = {
+  id: number;
+  title: string;
+  time: number;
+};
 
 function App() {
-  const records = [
-    { id: 1, title: "勉強の記録1", time: 1 },
-    { id: 2, title: "勉強の記録2", time: 3 },
-    { id: 3, title: "勉強の記録3", time: 5 },
-  ];
+  const [records, setRecords] = useState<Record[]>([]);
+  const [title, setTitle] = useState<string>("");
+  const [time, setTime] = useState<number>(0);
+
+  const addLearningRecord = () => {
+    const newRecord: Record = {
+      id: records.length + 1,
+      title: title,
+      time: time,
+    };
+    setRecords([...records, newRecord]);
+    setTitle("");
+    setTime(0);
+  };
 
   return (
     <>
@@ -23,9 +39,22 @@ function App() {
             学習記録一覧
           </Text>
           <Box mb={"8px"}>
-            <Input placeholder="学習内容を入力" mb={"4px"} />
-            <Input placeholder="学習時間を入力" mb={"4px"} type="number" />
-            <Button colorScheme="teal">記録</Button>
+            <Input
+              placeholder="学習内容を入力"
+              mb={"4px"}
+              onChange={(e) => setTitle(e.target.value)}
+              value={title}
+            />
+            <Input
+              placeholder="学習時間(h)を入力"
+              mb={"4px"}
+              type="number"
+              onChange={(e) => setTime(Number(e.target.value))}
+              value={time || ""}
+            />
+            <Button colorScheme="teal" onClick={addLearningRecord}>
+              記録
+            </Button>
           </Box>
           <Box>
             {records.map((record) => {
