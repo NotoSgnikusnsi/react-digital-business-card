@@ -19,6 +19,7 @@ function App() {
   const [records, setRecords] = useState<Record[]>([]);
   const [title, setTitle] = useState<string>("");
   const [time, setTime] = useState<number>(0);
+  const [totalTime, setTotalTime] = useState<number>(0);
 
   const addLearningRecord = () => {
     if (title === "") {
@@ -38,6 +39,7 @@ function App() {
     setRecords([...records, newRecord]);
     setTitle("");
     setTime(0);
+    setTotalTime(records.reduce((acc, record) => acc + record.time, 0) + time);
   };
 
   return (
@@ -61,9 +63,12 @@ function App() {
               onChange={(e) => setTime(Number(e.target.value))}
               value={time || ""}
             />
-            <Button colorScheme="teal" onClick={addLearningRecord}>
-              記録
-            </Button>
+            <Flex align={"center"} justifyContent={"space-between"}>
+              <Button colorScheme="teal" onClick={addLearningRecord}>
+                記録
+              </Button>
+              <Text>合計学習時間：{totalTime}</Text>
+            </Flex>
           </Box>
           <Box>
             {records.map((record) => {
