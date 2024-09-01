@@ -22,3 +22,28 @@ const records = [
 - [x] 全項目が入力されていないときにエラーが表示される
 - [x] 正しく入力されている場合登録ボタンを押すとエラーが消える
 - [x] 記録した勉強の時間を合計した値をみることができる
+
+## 課題2
+- [x] Supabaseのプロジェクトを作成する
+- [x] Table Editorで以下のテーブルを作成する
+```
+テーブル名 : study-record
+
+column	type	option
+id	uuid	
+title	varchar	non null
+time	int4	non null
+```
+- [x] テストデータを3つ作成する
+- [x] テストデータを一覧でみることができる
+- [x] データ読み込みのタイミングはLoading...が表示される
+- [X] 登録ボタンを押したらsupabaseのテーブルに学習記録が追加される
+- [ ] 削除ボタンを押したらSupabaseのテーブルから学習記録が削除される
+- [ ] Firebaseのアカウントを作成する
+- [ ] Firebaseのプロジェクトを作成する
+- [ ] Firebaseにデプロイする
+- [ ] GitHub ActionsでHello Worldすることができる
+- [ ] https://qiita.com/Teach/items/d2c4d7bec98228df1807
+- [ ] Push時にFirebaseに変更をデプロイすることができる
+- [ ] ひと工夫が必要になるのでコンソールのエラーを見ながら対処しましょう
+- [ ] Jestとreact-testing-libraryを導入する

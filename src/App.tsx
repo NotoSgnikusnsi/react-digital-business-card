@@ -7,40 +7,74 @@ import {
   Text,
 } from "@chakra-ui/react";
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "./supabaseClient";
 
 type Record = {
-  id: number;
+  id?: string;
   title: string;
   time: number;
 };
 
 function App() {
+  const [loading, setLoading] = useState<boolean>(false);
   const [records, setRecords] = useState<Record[]>([]);
   const [title, setTitle] = useState<string>("");
   const [time, setTime] = useState<number>(0);
   const [totalTime, setTotalTime] = useState<number>(0);
 
-  const addLearningRecord = () => {
-    if (title === "") {
-      alert("学習内容を入力してください");
+  const fetchDatabaseTable = async () => {
+    const { data, error } = await supabase.from("study_record").select("*");
+    if (error) {
+      alert("データの取得に失敗しました");
       return;
     }
-    if (time === 0) {
-      alert("学習時間を入力してください");
-      return;
+    if (data) {
+      return data;
     }
+  };
 
+  const insertDatabaseTable = async (record: Record) => {
+    const { data, error } = await supabase
+      .from("study_record")
+      .insert([record]);
+    if (error) {
+      alert("データの記録に失敗しました");
+      return;
+    }
+    if (data) {
+      return data;
+    }
+  };
+
+  const loadingRecords = async () => {
+    setLoading(true);
+    const records = await fetchDatabaseTable();
+    if (records) {
+      setRecords(records);
+      setTotalTime(records.reduce((acc, cur) => acc + cur.time, 0));
+    }
+    setLoading(false);
+  };
+
+  const addRecord = async () => {
+    if (title === "" || time <= 0) {
+      alert("学習内容と学習時間を入力してください");
+      return;
+    }
     const newRecord: Record = {
-      id: records.length + 1,
       title: title,
       time: time,
     };
-    setRecords([...records, newRecord]);
+    await insertDatabaseTable(newRecord);
     setTitle("");
     setTime(0);
-    setTotalTime(records.reduce((acc, record) => acc + record.time, 0) + time);
+    loadingRecords();
   };
+
+  useEffect(() => {
+    loadingRecords();
+  }, []);
 
   return (
     <>
@@ -53,34 +87,38 @@ function App() {
             <Input
               placeholder="学習内容を入力"
               mb={"4px"}
-              onChange={(e) => setTitle(e.target.value)}
               value={title}
+              onChange={(e) => setTitle(e.target.value)}
             />
             <Input
               placeholder="学習時間(h)を入力"
               mb={"4px"}
               type="number"
+              value={time === 0 ? "" : time}
               onChange={(e) => setTime(Number(e.target.value))}
-              value={time || ""}
             />
             <Flex align={"center"} justifyContent={"space-between"}>
-              <Button colorScheme="teal" onClick={addLearningRecord}>
+              <Button colorScheme="teal" onClick={addRecord}>
                 記録
               </Button>
               <Text>合計学習時間：{totalTime}</Text>
             </Flex>
           </Box>
           <Box>
-            {records.map((record) => {
-              return (
-                <div key={record.id}>
-                  <Flex align={"center"} justifyContent={"space-between"}>
-                    <Text>{record.title}</Text>
-                    <Text>{record.time}</Text>
-                  </Flex>
-                </div>
-              );
-            })}
+            {loading ? (
+              <Text>読み込み中...</Text>
+            ) : (
+              records.map((record) => {
+                return (
+                  <div key={record.id}>
+                    <Flex align={"center"} justifyContent={"space-between"}>
+                      <Text>{record.title}</Text>
+                      <Text>{record.time}</Text>
+                    </Flex>
+                  </div>
+                );
+              })
+            )}
           </Box>
         </div>
       </ChakraProvider>
