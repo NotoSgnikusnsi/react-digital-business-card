@@ -52,7 +52,9 @@ function App() {
     setLoading(true);
     const records = await fetchRecords();
     setRecords(records);
-    setTotalTime(records.reduce((acc, record) => acc + record.time, 0));
+    setTotalTime(
+      records ? records.reduce((acc, record) => acc + record.time, 0) : 0
+    );
     setLoading(false);
   };
 
