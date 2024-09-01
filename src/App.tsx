@@ -48,6 +48,21 @@ function App() {
     }
   };
 
+  const deleteRecord = async (id: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("study_record")
+        .delete()
+        .eq("id", id)
+        .select();
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      alert("データの削除に失敗しました");
+      return [];
+    }
+  };
+
   const loadRecords = async () => {
     setLoading(true);
     const records = await fetchRecords();
@@ -78,6 +93,20 @@ function App() {
     setTime(0);
   };
 
+  const handleDeleteRecord = async (id: string, title: string) => {
+    const confirm = window.confirm(`「${title}」を削除しますか？`);
+    if (!confirm) return;
+    const result = await deleteRecord(id);
+    if (result.length === 0) {
+      return;
+    } else {
+      setRecords((prevRecords) =>
+        prevRecords.filter((record) => record.id !== id)
+      );
+      setTotalTime((prevTotalTime) => prevTotalTime - result[0].time);
+    }
+  };
+
   useEffect(() => {
     loadRecords();
   }, []);
@@ -100,7 +129,7 @@ function App() {
               placeholder="学習時間(h)を入力"
               mb={"4px"}
               type="number"
-              value={time === 0 ? "" : time}
+              value={time === 0 ? "" : time || ""}
               onChange={(e) => setTime(Number(e.target.value))}
             />
             <Flex align={"center"} justifyContent={"space-between"}>
@@ -116,7 +145,10 @@ function App() {
             ) : (
               records.map((record) => {
                 return (
-                  <div key={record.id}>
+                  <div
+                    key={record.id}
+                    onClick={() => handleDeleteRecord(record.id, record.title)}
+                  >
                     <Flex align={"center"} justifyContent={"space-between"}>
                       <Text>{record.title}</Text>
                       <Text>{record.time}</Text>
