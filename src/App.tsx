@@ -147,7 +147,7 @@ function App() {
                 return (
                   <div
                     key={record.id}
-                    onClick={() => handleDeleteRecord(record.id, record.title)}
+                    onClick={() => handleDeleteRecord(record.id!, record.title)}
                   >
                     <Flex align={"center"} justifyContent={"space-between"}>
                       <Text>{record.title}</Text>
