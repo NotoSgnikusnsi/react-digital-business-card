@@ -6,15 +6,14 @@ import {
   Input,
   Text,
 } from "@chakra-ui/react";
-import "./App.css";
+import "../styles//App.css";
 import { useEffect, useState } from "react";
-import { supabase } from "./supabaseClient";
-
-type Record = {
-  id?: string;
-  title: string;
-  time: number;
-};
+import {
+  fetchRecords,
+  insertRecord,
+  deleteRecord,
+} from "../services/supabaseClient.ts";
+import { Record } from "../types/Record.ts";
 
 function App() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -22,46 +21,6 @@ function App() {
   const [title, setTitle] = useState<string>("");
   const [time, setTime] = useState<number>(0);
   const [totalTime, setTotalTime] = useState<number>(0);
-
-  const fetchRecords = async () => {
-    try {
-      const { data, error } = await supabase.from("study_record").select("*");
-      if (error) throw error;
-      return data;
-    } catch (error) {
-      alert("データの取得に失敗しました");
-      return [];
-    }
-  };
-
-  const insertRecord = async (record: Record) => {
-    try {
-      const { data, error } = await supabase
-        .from("study_record")
-        .insert([record])
-        .select();
-      if (error) throw error;
-      return data;
-    } catch (error) {
-      alert("データの記録に失敗しました");
-      return [];
-    }
-  };
-
-  const deleteRecord = async (id: string) => {
-    try {
-      const { data, error } = await supabase
-        .from("study_record")
-        .delete()
-        .eq("id", id)
-        .select();
-      if (error) throw error;
-      return data;
-    } catch (error) {
-      alert("データの削除に失敗しました");
-      return [];
-    }
-  };
 
   const loadRecords = async () => {
     setLoading(true);
