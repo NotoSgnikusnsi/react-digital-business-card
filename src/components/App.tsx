@@ -33,6 +33,7 @@ function App() {
   };
 
   const handleAddRecord = async () => {
+    setLoading(true);
     if (title.trim() === "" || time <= 0) {
       alert("学習内容と時間を入力してください");
       return;
@@ -50,9 +51,11 @@ function App() {
     }
     setTitle("");
     setTime(0);
+    setLoading(false);
   };
 
   const handleDeleteRecord = async (id: string, title: string) => {
+    setLoading(true);
     const confirm = window.confirm(`「${title}」を削除しますか？`);
     if (!confirm) return;
     const result = await deleteRecord(id);
@@ -64,6 +67,7 @@ function App() {
       );
       setTotalTime((prevTotalTime) => prevTotalTime - result[0].time);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
